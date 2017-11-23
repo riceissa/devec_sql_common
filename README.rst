@@ -9,6 +9,8 @@ See e.g. the Maddison_ repo, which links out to all the other repos.
 
 To install this package, do:
 
+::
+
     git clone https://github.com/riceissa/devec_sql_common
     cd devec_sql_common
     pip3 install -e .
