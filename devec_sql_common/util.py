@@ -581,10 +581,14 @@ def uniq_join(lst=[], delim=",", method="string_concat"):
     elif method == "string_concat":
         # This can do 7.6 million required for WDI
         tup = region + odate + metric + units
+    else:
+        # Don't check for uniqueness
+        tup = None
 
-    if tup in UNIQ_JOIN_SET:
-        raise ValueError("We have seen this combination before!", tup)
-    UNIQ_JOIN_SET.add(tup)
-    if len(UNIQ_JOIN_SET) % 100000 == 0:
-        print("UNIQ_JOIN_SET size:", len(UNIQ_JOIN_SET), file=sys.stderr)
+    if tup:
+        if tup in UNIQ_JOIN_SET:
+            raise ValueError("We have seen this combination before!", tup)
+        UNIQ_JOIN_SET.add(tup)
+        if len(UNIQ_JOIN_SET) % 100000 == 0:
+            print("UNIQ_JOIN_SET size:", len(UNIQ_JOIN_SET), file=sys.stderr)
     return delim.join(lst)
