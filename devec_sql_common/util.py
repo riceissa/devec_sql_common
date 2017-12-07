@@ -566,7 +566,8 @@ def uniq_join(lst=[], delim=",", method="string_concat"):
     while string_concat uses a string of the concatenated fields. The latter
     can result in some false positives because e.g. both (ab, c) and (a, bc)
     result in the string "abc". In practice this shouldn't be a problem because
-    the fields are different enough."""
+    the fields are different enough. The latter can also hold the most amount
+    of data in memory."""
     region, odate, database_url, _, metric, units, _, _ = lst
 
     if method == "tuple_with_db_url":
