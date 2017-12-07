@@ -547,3 +547,20 @@ def region_normalized(x, region_map=REGION_MAP):
         return region_map[k]
     else:
         return x
+
+# Set to keep track of the (region, odate, database_url, metric, units)
+# combinations we have seen.
+UNIQ_JOIN_SET = set()
+
+
+def uniq_join(lst=[], delim=","):
+    """Join lst using delim like delim.join(lst), but ensure the joined items
+    are unique across calls for the combination (region, odate, database_url,
+    metric, units). In particular, if we call uniq_join with the same lst
+    twice, it should fail."""
+    region, odate, database_url, _, metric, units, _, _ = lst
+    tup = (region, odate, database_url, metric, units)
+    if tup in UNIQ_JOIN_SET:
+        raise ValueError("We have seen this combination before!", tup)
+    UNIQ_JOIN_SET.add(tup)
+    return delim.join(lst)
