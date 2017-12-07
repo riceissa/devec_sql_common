@@ -555,13 +555,32 @@ def region_normalized(x, region_map=REGION_MAP):
 UNIQ_JOIN_SET = set()
 
 
-def uniq_join(lst=[], delim=","):
+def uniq_join(lst=[], delim=",", method="string_concat"):
     """Join lst using delim like delim.join(lst), but ensure the joined items
     are unique across calls for the combination (region, odate, database_url,
     metric, units). In particular, if we call uniq_join with the same lst
-    twice, it should fail."""
+    twice, it should fail.
+
+    The parameter method is the method used to store the combination.
+    tuple_with_db_url and tuple_without_db_url use tuples to store combinations
+    while string_concat uses a string of the concatenated fields. The latter
+    can result in some false positives because e.g. both (ab, c) and (a, bc)
+    result in the string "abc". In practice this shouldn't be a problem because
+    the fields are different enough."""
     region, odate, database_url, _, metric, units, _, _ = lst
-    tup = (region, odate, database_url, metric, units)
+
+    if method == "tuple_with_db_url":
+        # Can hold 4 million of these on 4GB RAM
+        tup = (region, odate, database_url, metric, units)
+    elif method == "tuple_without_db_url":
+        # Can hold about 6.5 million of these on 4GB RAM; we don't really need to
+        # check for database_url because each script has a single database_url
+        # anyway
+        tup = (region, odate, metric, units)
+    elif method == "string_concat":
+        # This can do 7.6 million required for WDI
+        tup = region + odate + metric + units
+
     if tup in UNIQ_JOIN_SET:
         raise ValueError("We have seen this combination before!", tup)
     UNIQ_JOIN_SET.add(tup)
