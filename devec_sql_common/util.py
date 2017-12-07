@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import sys
+
 
 def mysql_quote(x):
     '''
@@ -563,4 +565,6 @@ def uniq_join(lst=[], delim=","):
     if tup in UNIQ_JOIN_SET:
         raise ValueError("We have seen this combination before!", tup)
     UNIQ_JOIN_SET.add(tup)
+    if len(UNIQ_JOIN_SET) % 100000 == 0:
+        print("UNIQ_JOIN_SET size:", len(UNIQ_JOIN_SET), file=sys.stderr)
     return delim.join(lst)
