@@ -592,3 +592,14 @@ def uniq_join(lst=[], delim=",", method="string_concat"):
         if len(UNIQ_JOIN_SET) % 100000 == 0:
             print("UNIQ_JOIN_SET size:", len(UNIQ_JOIN_SET), file=sys.stderr)
     return delim.join(lst)
+
+
+def print_insert_header():
+    """Print the insert header to speed up insertions for bulk inserts."""
+    print("set autocommit = 0;")
+
+
+def print_insert_footer():
+    """Print the insert footer. Cleans up after print_insert_header."""
+    print("commit;")
+    print("set autocommit = 1;")
